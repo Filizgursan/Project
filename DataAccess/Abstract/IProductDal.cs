@@ -8,16 +8,9 @@ using System.Text;
 //interface değil, operasyonları public bu nedenle manul şekilde public yapmazsak hata alabiliriz.
 namespace DataAccess.Abstract
 {
-    public interface IProductDal
+    public interface IProductDal: IEntityRepository<Product>
     {
         //Add ile project references yaptık cünkü entititese erişmemiş gerek. 
-        List<Product> GetAll();
-        void Add(Product product);
-        void Update(Product product);
-        void Delete(Product product);
-        
-        //Ürünleri kategoriye göre filtrele
-        List<Product> GetAllByCategory(int categoryId);
-
+        List<Product> GetAll(Func<object, bool> p);
     }
 }
