@@ -1,5 +1,5 @@
 ﻿// Entity adında bir class olabilir bunun nerden geldiğini bvuradan anlayabiliriz. Abstracttan geliyor.
-using Entities.Abstract;
+using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;

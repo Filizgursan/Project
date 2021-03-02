@@ -6,10 +6,8 @@ using System.Text;
 
 namespace DataAccess.Abstract
 {
-    // Her zaman interfacedasn başlanır.
-    // Customer Repository'sidir.
-    public interface ICustomerDal:IEntityRepository<Customer>
+    // Orders içinde tablolar barındırırsa, her bir order her bi satırı tanımlar.
+    public interface IOrderDal:IEntityRepository<Order>
     {
-        
     }
 }

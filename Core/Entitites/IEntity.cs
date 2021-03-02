@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Entities.Abstract
+namespace Core.Entities
 {
     // Bu bir veritabanı nesnesi demek istiyoruz, IEntity ile.
     // IEntity implement eden class bir veritabanı tablosudur. Concrette implemente edebilirim.

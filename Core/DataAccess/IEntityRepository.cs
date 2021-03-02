@@ -1,10 +1,10 @@
-﻿using Entities.Abstract;
+﻿using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace DataAccess.Abstract
+namespace Core.DataAccess
 {
     // T'yi sınırlandırmak istiyoruz. Yani yazılan şeyi sınırlandıralım----> Generate Constraint
     // class bir tip değil(int gibi vs.) referans tipidir.
