@@ -9,7 +9,8 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            //ProductTest(); Alttaki yazılan kodu metodun içine koyar.
+            ProductTest(); 
+            //Alttaki yazılan kodu metodun içine koyar.
             //CategoryTest();
             //Join operasyonları için entities/ dtos klasörü kullandık.
         }
@@ -27,9 +28,9 @@ namespace ConsoleUI
         {
             ProductManager productManager = new ProductManager(new EfProductDal());
 
-            foreach (var product in productManager.GetByUnitPrice(50, 100))
+            foreach (var product in productManager.GetProductDetails())
             {
-                Console.WriteLine(product.ProductName);
+                Console.WriteLine(product.ProductName + "/" + product.CategoryName +product.UnitsInStock);
             }
         }
     }

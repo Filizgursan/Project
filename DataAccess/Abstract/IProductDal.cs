@@ -1,5 +1,6 @@
 ﻿using Core.DataAccess;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,7 @@ namespace DataAccess.Abstract
     public interface IProductDal:IEntityRepository<Product>
     {
         //Add ile project references yaptık cünkü entititese erişmemiş gerek. 
+        List<ProductDetailDto> GetProductDetails();
        
     }
 }
