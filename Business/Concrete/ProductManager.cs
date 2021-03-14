@@ -39,7 +39,7 @@ namespace Business.Concrete
             //İş kodlarını yazıyoruz.(if-else vs..)
             //BİR İŞ SINIFI BAŞKA BİR İŞ SINIFINI NEWLEMEZ*****
             //return _productDal.GetAll(p => p.CategoryId ==2);
-            if(DateTime.Now.Hour == 22)
+            if(DateTime.Now.Hour == 23)
             {
                 // MaintenanceTime bakım zamanı
                 return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
