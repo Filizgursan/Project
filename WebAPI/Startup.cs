@@ -36,9 +36,9 @@ namespace WebAPI
             // Örneğin sepet tutyorsaki data tutmuyorsak kullanabiliriz.Data tutmamak gerek.
 
             //Özetle biri ctor da IProductService isterse ona bir product manager newliyoruz.
-            services.AddSingleton<IProductService, ProductManager>();
-            //Daha sonra IProductDal bağımlılığına da sahip oldugunu gördük.
-            services.AddSingleton<IProductDal, EfProductDal>();
+            //services.AddSingleton<IProductService, ProductManager>();
+            ////Daha sonra IProductDal bağımlılığına da sahip oldugunu gördük.
+            //services.AddSingleton<IProductDal, EfProductDal>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

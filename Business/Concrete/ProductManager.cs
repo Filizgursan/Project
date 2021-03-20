@@ -1,10 +1,14 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,16 +26,15 @@ namespace Business.Concrete
             _productDal = productDal;
         }
 
+        [ValidationAspect(typeof(ProductValidator))] //productı ve validatoru bulup validate yapıcak.
         public IResult Add(Product product)
         {
-            if (product.ProductName.Length <2)
-            {
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
             // business code;
             _productDal.Add(product);
             //Bunu yapabilmek için const eklemek gerekir;
             return new SuccessResult(Messages.ProductAdded);
+            //validation code ile business code farklıdır. İş kurallarına dahil etmek içimn yapısal olarak kontrol edip karar vermektir.
+
         }
 
         public IDataResult<List<Product>> GetAll()
