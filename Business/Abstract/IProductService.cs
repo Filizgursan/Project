@@ -19,5 +19,6 @@ namespace Business.Abstract
         // Tek bir ürün döndürür. Product
         //burada data yok void var
         IResult Add(Product product);
+        IResult Update(Product product);
     }
 }

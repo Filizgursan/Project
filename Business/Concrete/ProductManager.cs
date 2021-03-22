@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -11,6 +12,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -19,21 +21,31 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
+   
 
         // product manager Iproductdal referans ver diyor.
         public ProductManager(IProductDal productDal)
         {
             _productDal = productDal;
+
         }
 
         [ValidationAspect(typeof(ProductValidator))] //productı ve validatoru bulup validate yapıcak.
         public IResult Add(Product product)
         {
-            // business code;
-            _productDal.Add(product);
-            //Bunu yapabilmek için const eklemek gerekir;
-            return new SuccessResult(Messages.ProductAdded);
-            //validation code ile business code farklıdır. İş kurallarına dahil etmek içimn yapısal olarak kontrol edip karar vermektir.
+
+            if(CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+            {
+                if(CheckIfProductNameExists(product.ProductName).Success)
+                {
+                    // business code;
+                    _productDal.Add(product);
+                    //Bunu yapabilmek için const eklemek gerekir;
+                    return new SuccessResult(Messages.ProductAdded);
+                    //validation code ile business code farklıdır. İş kurallarına dahil etmek içimn yapısal olarak kontrol edip karar vermektir.
+                }
+            }
+            return new ErrorResult();
 
         }
 
@@ -72,6 +84,44 @@ namespace Business.Concrete
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
+        }
+
+        [ValidationAspect(typeof(ProductValidator))]
+        public IResult Update(Product product)
+        {
+            //??? Bir kategoride en fazla 10 ürün olabilir???
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+
+            // business code;
+            _productDal.Add(product);
+            //Bunu yapabilmek için const eklemek gerekir;
+            return new SuccessResult(Messages.ProductAdded);
+            //validation code ile business code farklıdır. İş kurallarına dahil etmek içimn yapısal olarak kontrol edip karar vermektir.
+        }
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
+        {
+            //select count(*) from products where categoryId = 1
+            var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+
+        }
+        //Aynı isimde ürün eklenemez?
+        private IResult CheckIfProductNameExists (string ProductName)
+        {
+            var result = _productDal.GetAll(p => p.ProductName == ProductName).Any();
+            if (result)
+            {
+                return new ErrorResult(Messages.ProductNameAlreadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }
