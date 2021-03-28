@@ -4,6 +4,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -21,31 +22,33 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
+
+        //injection
+        ICategoryService _categoryService;
    
 
         // product manager Iproductdal referans ver diyor.
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal, ICategoryService categoryService)
         {
             _productDal = productDal;
-
+            _categoryService = categoryService;
         }
-
+       
         [ValidationAspect(typeof(ProductValidator))] //productı ve validatoru bulup validate yapıcak.
         public IResult Add(Product product)
         {
-
-            if(CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+            //İş kurallarını burada çalıtırdık. Array içine istediğimiz kadar sorgu atayabiliriz.
+            IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName), CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+                CheckIfCategoryLimitExceded());
+            if (result != null)
             {
-                if(CheckIfProductNameExists(product.ProductName).Success)
-                {
-                    // business code;
-                    _productDal.Add(product);
-                    //Bunu yapabilmek için const eklemek gerekir;
-                    return new SuccessResult(Messages.ProductAdded);
-                    //validation code ile business code farklıdır. İş kurallarına dahil etmek içimn yapısal olarak kontrol edip karar vermektir.
-                }
+                return result;
             }
-            return new ErrorResult();
+            // business code;
+            _productDal.Add(product);
+            //Bunu yapabilmek için const eklemek gerekir;
+            return new SuccessResult(Messages.ProductAdded);
+           //eğer mevcut kategori sayısı 15i geçtiyse sisteme yeni ürün eklenemez?
 
         }
 
@@ -120,6 +123,16 @@ namespace Business.Concrete
             if (result)
             {
                 return new ErrorResult(Messages.ProductNameAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCategoryLimitExceded()
+        {
+            var result = _categoryService.GetAll();
+            if (result.Data.Count>15)
+            {
+                return new ErrorResult(Messages.CategoryLimitedExceded);
             }
             return new SuccessResult();
         }
