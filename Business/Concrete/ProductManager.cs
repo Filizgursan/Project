@@ -34,7 +34,7 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
-        [SecuredOperation("product.add")]
+        //[SecuredOperation("product.add")]
         [ValidationAspect(typeof(ProductValidator))] //productı ve validatoru bulup validate yapıcak.
         public IResult Add(Product product)
         {
