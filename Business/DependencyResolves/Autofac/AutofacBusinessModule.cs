@@ -34,7 +34,7 @@ namespace Business.DependencyResolves.Autofac
             builder.RegisterType<AuthManager>().As<IAuthService>();
             builder.RegisterType<JwtHelper>().As<ITokenHelper>();
 
-            builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>();
+          
 
             //Aspect var mı diye kontrolleri sağlayan kısım burasıdır. 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();

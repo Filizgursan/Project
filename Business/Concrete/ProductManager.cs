@@ -3,6 +3,7 @@ using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -26,17 +27,16 @@ namespace Business.Concrete
 
         //injection
         ICategoryService _categoryService;
-   
-
+ 
         // product manager Iproductdal referans ver diyor.
         public ProductManager(IProductDal productDal, ICategoryService categoryService)
         {
             _productDal = productDal;
             _categoryService = categoryService;
         }
-
-        [SecuredOperation("product.add,admin")]
+        //[SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))] //productı ve validatoru bulup validate yapıcak.
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
             //İş kurallarını burada çalıtırdık. Array içine istediğimiz kadar sorgu atayabiliriz.
@@ -53,7 +53,7 @@ namespace Business.Concrete
            //eğer mevcut kategori sayısı 15i geçtiyse sisteme yeni ürün eklenemez?
 
         }
-
+        [CacheAspect] //key,value
         public IDataResult<List<Product>> GetAll()
         {
             //İş kodlarını yazıyoruz.(if-else vs..)
@@ -66,8 +66,6 @@ namespace Business.Concrete
             }
             //Zaten 2 parametre döndürüyor.
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
-
-            
         }
 
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
@@ -76,6 +74,8 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>( _productDal.GetAll(p => p.CategoryId == id));
         }
 
+        [CacheAspect] //key,value
+        
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
@@ -92,6 +92,7 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
             //??? Bir kategoride en fazla 10 ürün olabilir???
