@@ -82,6 +82,8 @@ namespace WebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            //api kurallarına uygun olarak tüm sistemi try-catch içerisine almış olduk;
+            app.ConfigureCustomExceptionMiddleware();
             //2504 Frontend;
             app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader());
 
